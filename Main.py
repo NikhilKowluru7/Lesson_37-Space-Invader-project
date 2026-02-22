@@ -1,6 +1,7 @@
 import math
 import random
 import pygame
+from pygame import mixer
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT= 500
 PLAYER_START_X = 370
@@ -13,8 +14,11 @@ BULLET_SPEED_Y = 10
 COLLISION_DISTANCE = 27
 
 pygame.init()
+mixer.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
 backround = pygame.image.load("background (2).png")
+explosion_sound = mixer.Sound("sound.wav")
+gameover_sound = mixer.Sound("gameover.wav")
 pygame.display.set_caption("Space Invader")
 icon = pygame.image.load("ufo.png")
 pygame.display.set_icon(icon)
@@ -97,6 +101,7 @@ while running:
         if enemyY[i]>340:
             for j in range(num_of_enemies):
                 enemyY[j] = 2000
+            gameover_sound.play()
             game_over_text()
             break
         enemyX[i]+= enemyX_change[i]
@@ -105,6 +110,7 @@ while running:
             enemyY[i] += enemyY_change[i]
 
         if isCollision(enemyX[i],enemyY[i],bulletX,bulletY):
+            explosion_sound.play()
             bulletY = PLAYER_START_Y
             bullet_state = "ready"
             score_value += 1
